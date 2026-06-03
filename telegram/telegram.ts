@@ -34,9 +34,9 @@ export const webhook = api.raw(
         await handleCommand(msg.chat.id, msg.text);
       } else {
         const { reply } = await ai_engine.send({ message: msg.text });
-        const text = typeof reply === "string" ? reply : (reply as any).text ?? JSON.stringify(reply, null, 2);
+        const text = typeof reply === "string" ? reply : (reply as any).text ?? "";
         log.info("ai engine reply", { text });
-        await sendMessage(msg.chat.id, text);
+        if (text) await sendMessage(msg.chat.id, text);
       }
     }
 
