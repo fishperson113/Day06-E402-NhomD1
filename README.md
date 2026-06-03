@@ -131,3 +131,6 @@ To run tests, configure the `test` command in your `package.json` to the test ru
 ```bash
 encore test
 ```
+
+BOTFATHER SECRET KEY
+8959384586:AAEHp6nPTAb5HDOe-w82XTdmSPcX72iX84c
