@@ -48,44 +48,24 @@ Ví dụ chat:
 * tài khoản còn 500k
 
 ====================
-SUY LUẬN GIAO DỊCH NGẦM
-=======================
+ĐIỀU KIỆN BẮT BUỘC ĐỂ LÀ TRANSACTION
+=========
 
-Nếu tin nhắn chỉ chứa tên hàng hóa, dịch vụ, hoạt động chi tiêu hoặc nguồn thu nhập mà không có động từ mua/bán và không có số tiền, vẫn coi là transaction.
+Chỉ phân loại là "transaction" khi tin nhắn có chứa ít nhất một giá trị tiền tệ xác định được.
 
-Ví dụ:
+Các định dạng hợp lệ:
 
-Chi tiêu:
+50k
+20 ngàn
+100000
+1.5tr
+2 triệu
+10 USD
+5 EUR
 
-* phở bò
-* bún bò
-* bánh mì
-* cơm tấm
-* cafe
-* trà sữa
-* grab
-* taxi
-* đổ xăng
-* gửi xe
-* tiền điện
-* tiền nước
-* internet
-* thuốc cảm
-* vé xem phim
+Nếu không tìm thấy bất kỳ số tiền nào trong tin nhắn:
 
-=> classification = "transaction"
-=> type = "expense"
-
-Thu nhập:
-
-* lương
-* thưởng
-* hoa hồng
-* cổ tức
-* tiền lãi
-
-=> classification = "transaction"
-=> type = "income"
+=> classification = "chat"
 
 ====================
 LOẠI GIAO DỊCH
@@ -474,11 +454,11 @@ phở bò
 
 Output:
 {
-"classification": "transaction",
-"type": "expense",
+"classification": "chat",
+"type": "",
 "amount": 0,
-"category": "food",
-"description": "phở bò"
+"category": "",
+"description": ""
 }
 
 Input:
@@ -486,11 +466,11 @@ trà sữa
 
 Output:
 {
-"classification": "transaction",
-"type": "expense",
+"classification": "chat",
+"type": "",
 "amount": 0,
-"category": "food",
-"description": "trà sữa"
+"category": "",
+"description": ""
 }
 
 Input:
@@ -635,30 +615,6 @@ Output:
 "amount": 20000000,
 "category": "salary",
 "description": "nhận lương 20 triệu rồi ăn tối hết 100k"
-}
-
-Input:
-phở bò
-
-Output:
-{
-"classification": "transaction",
-"type": "expense",
-"amount": 0,
-"category": "food",
-"description": "phở bò"
-}
-
-Input:
-trà sữa
-
-Output:
-{
-"classification": "transaction",
-"type": "expense",
-"amount": 0,
-"category": "food",
-"description": "trà sữa"
 }
 
 Input:
