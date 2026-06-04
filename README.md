@@ -2,6 +2,14 @@
 
 Quản lý thu chi cá nhân qua Telegram + Encore + n8n workflow.
 
+## Project Structure
+
+```
+├── codebase/       # Toàn bộ mã nguồn (Encore + Next.js)
+├── spec/           # Tài liệu đặc tả
+└── README.md
+```
+
 ## Architecture
 
 ```
@@ -18,7 +26,7 @@ Telegram ──webhook──► Encore (telegram service)
               sendMessage reply về Telegram
 ```
 
-## Services
+## Services (trong `codebase/`)
 
 | Service | Chức năng |
 |---|---|
@@ -41,7 +49,7 @@ Telegram ──webhook──► Encore (telegram service)
 ### 1. Install dependencies
 
 ```bash
-cd mini-hackathon
+cd mini-hackathon/codebase
 npm install
 ```
 
@@ -50,6 +58,8 @@ npm install
 Encore secrets được inject vào app khi runtime, không lưu trong code.
 
 ```bash
+cd mini-hackathon/codebase
+
 # Telegram Bot Token (bắt buộc)
 encore secret set --type dev,local TelegramBotToken
 # Nhập token từ @BotFather (dạng 123456:ABC-DEF...)
@@ -61,28 +71,22 @@ encore secret set --type dev,local N8nWebhookUrl
 
 ### 3. Configure frontend
 
-Frontend dùng Next.js public env vars. File `frontend/.env` chứa sẵn giá trị mặc định phù hợp cho dev:
+Frontend dùng Next.js public env vars. File `codebase/frontend/.env` chứa sẵn giá trị mặc định:
 
 ```env
-# API base URL (mặc định port Encore)
 NEXT_PUBLIC_API_URL=http://localhost:4000
-
-# Polling interval (ms)
 NEXT_PUBLIC_POLL_INTERVAL=5000
-
-# Locale & currency
 NEXT_PUBLIC_LOCALE=vi-VN
 NEXT_PUBLIC_CURRENCY= đ
-
-# Encore dev toolbar (bật = true khi cần debug)
 NEXT_PUBLIC_ENABLE_TOOLBAR=false
 ```
 
-Có thể ghi đè bằng file `frontend/.env.local` (đã trong `.gitignore`).
+Ghi đè bằng file `codebase/frontend/.env.local` (đã trong `.gitignore`).
 
 ### 4. Run backend
 
 ```bash
+cd codebase
 encore run
 ```
 
@@ -96,10 +100,10 @@ Mở terminal mới:
 ngrok http 4000
 ```
 
-Hoặc dùng domain cố định nếu có:
+Hoặc dùng domain cố định:
 
 ```bash
-ngrok http 4000 --domain your-domain.ngrok-free.dev
+ngrok http 4000 --domain pennie-superindustrious-january.ngrok-free.dev
 ```
 
 Lấy URL từ output của ngrok (dạng `https://xxxx.ngrok-free.dev`).
@@ -115,11 +119,9 @@ Kết quả mong đợi: `{"ok": true, "result": true, "description": "Webhook w
 
 ## Run locally (tóm tắt)
 
-Mỗi lần dev cần 2 terminal:
-
 **Terminal 1 - Backend:**
 ```bash
-cd mini-hackathon
+cd mini-hackathon/codebase
 encore run
 ```
 
@@ -155,7 +157,7 @@ Mở `http://localhost:4000/finance`.
 ## Database
 
 ```bash
-# Kết nối psql
+cd mini-hackathon/codebase
 encore db shell finance --env=local --superuser
 ```
 
@@ -174,6 +176,8 @@ encore db shell finance --env=local --superuser
 ## Useful commands
 
 ```bash
+cd mini-hackathon/codebase
+
 # Logs
 encore run --debug
 

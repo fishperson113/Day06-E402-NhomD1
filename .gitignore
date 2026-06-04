@@ -1,16 +1,15 @@
-.encore
-encore.gen.go
-encore.gen.cue
-/.encore
 node_modules
-/encore.gen
 
-# Encore secrets (local overrides, may contain secrets)
-.secrets.local.cue
+# Encore
+codebase/.encore
+codebase/encore.gen
+
+# Encore secrets (local overrides)
+codebase/.secrets.local.cue
 
 # Next.js build output
-frontend/.next/
-frontend/out/
+codebase/frontend/.next/
+codebase/frontend/out/
 
 # Environment files with secrets
 .env.local
