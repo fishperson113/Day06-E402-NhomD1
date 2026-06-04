@@ -1,5 +1,5 @@
 {
-	"id":   "mini-hackathon-z482",
+	"id":   "",
 	"lang": "typescript",
 	"build": {
 		"docker": {
