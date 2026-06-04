@@ -1,11 +1,14 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 const POLL_INTERVAL = Number(process.env.NEXT_PUBLIC_POLL_INTERVAL) || 5000;
 const LOCALE = process.env.NEXT_PUBLIC_LOCALE || "vi-VN";
 const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || " đ";
+
+const fmt = (n: number) => new Intl.NumberFormat(LOCALE).format(n) + CURRENCY;
 
 interface Transaction {
   id: number;
@@ -23,41 +26,39 @@ interface Summary {
   by_category: { category: string; type: string; total: number }[];
 }
 
-function FinancePage() {
-  const [baseURL, setBaseURL] = useState("");
-  useEffect(() => setBaseURL(window.location.origin), []);
-
-  if (!baseURL) return null;
-
+export default function FinancePage() {
   return (
     <div className="min-h-full container px-4 mx-auto my-16">
-      <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+      <h2
+        className="brand-text text-2xl font-extrabold leading-7 sm:truncate sm:text-3xl sm:tracking-tight"
+      >
         Personal Finance
       </h2>
       <main className="pt-8 pb-16 space-y-8">
-        <SummaryCards baseURL={baseURL} />
-        <TransactionForm baseURL={baseURL} />
-        <TransactionList baseURL={baseURL} />
+        <SummaryCards />
+        <TransactionForm />
+        <TransactionList />
       </main>
     </div>
   );
 }
 
-const SummaryCards: FC<{ baseURL: string }> = ({ baseURL }) => {
+const SummaryCards: FC = () => {
   const { data } = useQuery<Summary>({
     queryKey: ["finance-summary"],
-    queryFn: () => fetch(`${baseURL}/finance/summary`).then((r) => r.json()),
+    queryFn: () => fetch(`${API_URL}/finance/summary`).then((r) => r.json()),
     refetchInterval: POLL_INTERVAL,
   });
-
-  const fmt = (n: number) =>
-    new Intl.NumberFormat(LOCALE).format(n) + CURRENCY;
 
   return (
     <div className="grid grid-cols-3 gap-4">
       <Card label="Income" value={fmt(data?.total_income ?? 0)} color="text-green-600" />
       <Card label="Expense" value={fmt(data?.total_expense ?? 0)} color="text-red-600" />
-      <Card label="Balance" value={fmt(data?.balance ?? 0)} color={data && data.balance >= 0 ? "text-blue-600" : "text-red-600"} />
+      <Card
+        label="Balance"
+        value={fmt(data?.balance ?? 0)}
+        color={data && data.balance >= 0 ? "text-blue-600" : "text-red-600"}
+      />
     </div>
   );
 };
@@ -69,7 +70,7 @@ const Card: FC<{ label: string; value: string; color: string }> = ({ label, valu
   </div>
 );
 
-const TransactionForm: FC<{ baseURL: string }> = ({ baseURL }) => {
+const TransactionForm: FC = () => {
   const [type, setType] = useState<"income" | "expense">("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
@@ -80,7 +81,7 @@ const TransactionForm: FC<{ baseURL: string }> = ({ baseURL }) => {
 
   const save = useMutation({
     mutationFn: async () => {
-      const resp = await fetch(`${baseURL}/finance/transactions`, {
+      const resp = await fetch(`${API_URL}/finance/transactions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -185,32 +186,30 @@ const TransactionForm: FC<{ baseURL: string }> = ({ baseURL }) => {
   );
 };
 
-const TransactionList: FC<{ baseURL: string }> = ({ baseURL }) => {
+const TransactionList: FC = () => {
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery<{ transactions: Transaction[]; total: number }>({
     queryKey: ["finance-transactions"],
-    queryFn: () => fetch(`${baseURL}/finance/transactions`).then((r) => r.json()),
+    queryFn: () => fetch(`${API_URL}/finance/transactions`).then((r) => r.json()),
     refetchInterval: POLL_INTERVAL,
   });
 
   const doDelete = useMutation({
     mutationFn: (id: number) =>
-      fetch(`${baseURL}/finance/transactions/${id}`, { method: "DELETE" }),
+      fetch(`${API_URL}/finance/transactions/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["finance-transactions"] });
       queryClient.invalidateQueries({ queryKey: ["finance-summary"] });
     },
   });
 
-  if (isLoading) return <div className="text-gray-500">Loading...</div>;
-  if (error) return <div className="text-red-600">{(error as Error).message}</div>;
-
-  const fmt = (n: number) => new Intl.NumberFormat(LOCALE).format(n) + CURRENCY;
+  if (isLoading) return <div className="text-gray-300">Loading...</div>;
+  if (error) return <div className="text-red-400">{(error as Error).message}</div>;
 
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-3">Transactions</h3>
+      <h3 className="section-title text-lg font-semibold mb-3">Transactions</h3>
 
       {data?.transactions.length === 0 && (
         <p className="text-gray-400 text-center py-8">No transactions yet.</p>
@@ -223,13 +222,15 @@ const TransactionList: FC<{ baseURL: string }> = ({ baseURL }) => {
             className="flex items-center justify-between rounded-lg border bg-white px-4 py-3 shadow-sm"
           >
             <div className="flex items-center gap-3">
-              <span className={`text-sm font-medium px-2 py-0.5 rounded ${t.type === "income" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+              <span
+                className={`text-sm font-medium px-2 py-0.5 rounded ${
+                  t.type === "income" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                }`}
+              >
                 {t.type === "income" ? "IN" : "EX"}
               </span>
               <div>
-                <p className="text-sm font-medium text-gray-900">
-                  {t.category}
-                </p>
+                <p className="text-sm font-medium text-gray-900">{t.category}</p>
                 {t.description && (
                   <p className="text-xs text-gray-500">{t.description}</p>
                 )}
@@ -237,7 +238,11 @@ const TransactionList: FC<{ baseURL: string }> = ({ baseURL }) => {
             </div>
 
             <div className="flex items-center gap-3">
-              <span className={`text-sm font-semibold ${t.type === "income" ? "text-green-600" : "text-red-600"}`}>
+              <span
+                className={`text-sm font-semibold ${
+                  t.type === "income" ? "text-green-600" : "text-red-600"
+                }`}
+              >
                 {t.type === "income" ? "+" : "-"}
                 {fmt(t.amount)}
               </span>
@@ -258,5 +263,3 @@ const TransactionList: FC<{ baseURL: string }> = ({ baseURL }) => {
     </div>
   );
 };
-
-export default FinancePage;

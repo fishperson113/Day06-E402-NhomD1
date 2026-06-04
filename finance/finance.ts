@@ -1,4 +1,4 @@
-import { api, APIError, ErrCode } from "encore.dev/api";
+import { api, APIError } from "encore.dev/api";
 import { SQLDatabase } from "encore.dev/storage/sqldb";
 
 const db = new SQLDatabase("finance", {
@@ -48,7 +48,7 @@ export interface ListResponse {
 export const list = api(
   { expose: true, method: "GET", path: "/finance/transactions" },
   async (): Promise<ListResponse> => {
-    const rows = db.query<Transaction>`
+    const rows = await db.query<Transaction>`
       SELECT id, type, amount, category, description,
         transaction_date::text, created_at::text
       FROM transactions
@@ -92,7 +92,7 @@ export const summary = api(
     const expense = await db.queryRow<{ total: number }>`
       SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE type = 'expense'
     `;
-    const byCat = db.query<{ category: string; type: string; total: number }>`
+    const byCat = await db.query<{ category: string; type: string; total: number }>`
       SELECT category, type, CAST(SUM(amount) AS DECIMAL(12,2)) as total
       FROM transactions
       GROUP BY category, type

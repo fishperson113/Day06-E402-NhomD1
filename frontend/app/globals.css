@@ -1,0 +1,103 @@
+/* ── Theme variables ─────────────────────────────────── */
+:root {
+  --body-bg:            linear-gradient(160deg, #0f0c29 0%, #302b63 45%, #1e1040 100%);
+  --header-bg:          linear-gradient(135deg, #0f0c29 0%, #2a1f6e 100%);
+  --header-border:      rgba(255, 215, 0, 0.2);
+  --logo-bg:            linear-gradient(135deg, #ffd700, #e8a000);
+  --logo-shadow:        0 0 18px rgba(255, 215, 0, 0.55);
+  --brand-from:         #ffe566;
+  --brand-via:          #ffd700;
+  --brand-to:           #e8a000;
+  --tagline-color:      rgba(255, 215, 0, 0.5);
+  --nav-color:          rgba(255, 215, 0, 0.85);
+  --nav-border:         rgba(255, 215, 0, 0.3);
+  --section-title:      #ffffff;
+}
+
+:root[data-theme="light"] {
+  --body-bg:            linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%);
+  --header-bg:          linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --header-border:      transparent;
+  --logo-bg:            rgba(255, 255, 255, 0.2);
+  --logo-shadow:        none;
+  --brand-from:         #ffffff;
+  --brand-via:          #e0e7ff;
+  --brand-to:           #c7d2fe;
+  --tagline-color:      rgba(255, 255, 255, 0.65);
+  --nav-color:          rgba(255, 255, 255, 0.85);
+  --nav-border:         rgba(255, 255, 255, 0.3);
+  --section-title:      #111827;
+}
+
+/* ── Base ────────────────────────────────────────────── */
+body {
+  background: var(--body-bg);
+  min-height: 100vh;
+  transition: background 0.4s ease;
+}
+
+/* ── Reusable classes ────────────────────────────────── */
+.brand-text {
+  background: linear-gradient(135deg, var(--brand-from), var(--brand-via), var(--brand-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-title {
+  color: var(--section-title);
+  transition: color 0.3s ease;
+}
+
+/* ── Particles ───────────────────────────────────────── */
+.particles {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+:root[data-theme="light"] .particles {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes coinFall {
+  0%   { transform: translateY(-80px) rotateY(0deg)   rotate(-10deg); opacity: 0;    }
+  8%   {                                                               opacity: 0.95; }
+  92%  {                                                               opacity: 0.75; }
+  100% { transform: translateY(110vh) rotateY(540deg) rotate(10deg);  opacity: 0;    }
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(0)   rotate(0deg);  opacity: 0;   }
+  25%       {                                      opacity: 1;   }
+  50%       { transform: scale(1.4) rotate(90deg); opacity: 0.9; }
+  75%       {                                      opacity: 0.3; }
+}
+
+.coin {
+  position: fixed;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%,
+    #fff9c0, #ffd700 40%, #e8a000 72%, #b8860b);
+  border: 1.5px solid rgba(255, 235, 100, 0.85);
+  box-shadow:
+    0 0 8px  rgba(255, 215, 0, 0.65),
+    0 0 18px rgba(255, 165, 0, 0.30),
+    inset 0 1px 3px rgba(255, 255, 255, 0.55);
+  animation: coinFall linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sparkle {
+  position: fixed;
+  font-size: 15px;
+  line-height: 1;
+  color: #ffd700;
+  filter: drop-shadow(0 0 5px #ffd700) drop-shadow(0 0 12px #ffaa00);
+  animation: sparkle ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+}
