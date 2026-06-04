@@ -4,3 +4,18 @@ encore.gen.cue
 /.encore
 node_modules
 /encore.gen
+
+# Encore secrets (local overrides, may contain secrets)
+.secrets.local.cue
+
+# Next.js build output
+frontend/.next/
+frontend/out/
+
+# Environment files with secrets
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db

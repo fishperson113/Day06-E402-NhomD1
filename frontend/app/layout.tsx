@@ -15,11 +15,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const enableToolbar =
+    typeof process !== "undefined" &&
+    process.env.NEXT_PUBLIC_ENABLE_TOOLBAR === "true";
+
   return (
     <html lang="en">
       <head>
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://encore.dev/encore-toolbar.js"></script>
+        {enableToolbar && (
+          <script src="https://encore.dev/encore-toolbar.js" />
+        )}
       </head>
       <body className={inter.className}>
         <nav className="bg-white border-b">

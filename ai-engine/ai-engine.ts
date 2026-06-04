@@ -1,7 +1,8 @@
 import { api } from "encore.dev/api";
+import { secret } from "encore.dev/config";
 import log from "encore.dev/log";
 
-const N8N_WEBHOOK_URL = "https://convicted-oriental-nursery-tune.trycloudflare.com/webhook/mini-hackathon";
+const n8nWebhookUrl = secret("N8nWebhookUrl");
 
 export interface AIRequest {
   message: string;
@@ -14,9 +15,10 @@ export interface AIResponse {
 export const send = api<AIRequest, AIResponse>(
   { method: "POST" },
   async ({ message }) => {
-    log.info("forwarding to n8n ai engine", { url: N8N_WEBHOOK_URL });
+    const url = n8nWebhookUrl();
+    log.info("forwarding to n8n ai engine", { url });
 
-    const resp = await fetch(N8N_WEBHOOK_URL, {
+    const resp = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),

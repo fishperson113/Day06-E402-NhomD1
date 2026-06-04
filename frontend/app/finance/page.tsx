@@ -3,7 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FC, useEffect, useState } from "react";
 
-const API = typeof window !== "undefined" ? window.location.origin : "http://localhost:4000";
+const POLL_INTERVAL = Number(process.env.NEXT_PUBLIC_POLL_INTERVAL) || 5000;
+const LOCALE = process.env.NEXT_PUBLIC_LOCALE || "vi-VN";
+const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || " đ";
 
 interface Transaction {
   id: number;
@@ -45,11 +47,11 @@ const SummaryCards: FC<{ baseURL: string }> = ({ baseURL }) => {
   const { data } = useQuery<Summary>({
     queryKey: ["finance-summary"],
     queryFn: () => fetch(`${baseURL}/finance/summary`).then((r) => r.json()),
-    refetchInterval: 5000,
+    refetchInterval: POLL_INTERVAL,
   });
 
   const fmt = (n: number) =>
-    new Intl.NumberFormat("vi-VN").format(n) + " đ";
+    new Intl.NumberFormat(LOCALE).format(n) + CURRENCY;
 
   return (
     <div className="grid grid-cols-3 gap-4">
@@ -189,7 +191,7 @@ const TransactionList: FC<{ baseURL: string }> = ({ baseURL }) => {
   const { data, isLoading, error } = useQuery<{ transactions: Transaction[]; total: number }>({
     queryKey: ["finance-transactions"],
     queryFn: () => fetch(`${baseURL}/finance/transactions`).then((r) => r.json()),
-    refetchInterval: 5000,
+    refetchInterval: POLL_INTERVAL,
   });
 
   const doDelete = useMutation({
@@ -204,7 +206,7 @@ const TransactionList: FC<{ baseURL: string }> = ({ baseURL }) => {
   if (isLoading) return <div className="text-gray-500">Loading...</div>;
   if (error) return <div className="text-red-600">{(error as Error).message}</div>;
 
-  const fmt = (n: number) => new Intl.NumberFormat("vi-VN").format(n) + " đ";
+  const fmt = (n: number) => new Intl.NumberFormat(LOCALE).format(n) + CURRENCY;
 
   return (
     <div>
