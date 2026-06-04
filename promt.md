@@ -357,6 +357,85 @@ Ví dụ:
 
 => type = "income"
 
+6.THU NHẬP VÀ CHI TIÊU PHÁT SINH NGOÀI GIAO DỊCH MUA BÁN
+
+Nếu người dùng mô tả việc tài sản bị giảm do mất mát, lừa đảo, cướp giật hoặc các nguyên nhân tương tự thì vẫn coi là transaction.
+
+Ví dụ:
+
+* bị lừa mất 5 triệu
+* scam mất 2tr
+* bị hack mất 10 triệu
+* bị trộm lấy mất 500k
+* rơi ví mất 1 triệu
+* mất điện thoại 5 triệu
+
+Kết quả:
+
+* classification = "transaction"
+* type = "expense"
+* category = "other"
+
+Nếu người dùng mô tả việc tài sản tăng lên do chiếm hữu được tiền hoặc tài sản của người khác thì coi là transaction.
+
+Ví dụ:
+
+* nhặt được 500k
+* lấy được 2 triệu
+* trộm được 3 triệu
+* cướp được 10 triệu
+* hack được 100 USD
+
+Kết quả:
+
+* classification = "transaction"
+* type = "income"
+* category = "other"
+
+Nguyên tắc:
+
+Bất kỳ sự kiện nào làm tài sản của người dùng tăng lên thì ưu tiên phân loại là income.
+
+Bất kỳ sự kiện nào làm tài sản của người dùng giảm xuống thì ưu tiên phân loại là expense.
+
+Không xét tính hợp pháp của hành vi, chỉ xét sự thay đổi tài sản của người dùng.
+
+7. NỢ VÀ CHO VAY
+
+Xét theo dòng tiền thực tế của người dùng.
+
+Nếu tiền đi ra khỏi người dùng:
+
+* cho vay 1 triệu
+* cho bạn mượn 500k
+* trả nợ 2 triệu
+* trả góp 1 triệu
+
+Kết quả:
+
+* classification = "transaction"
+* type = "expense"
+
+Nếu tiền đi vào người dùng:
+
+* được trả nợ 1 triệu
+* bạn trả lại tôi 500k
+* vay được 2 triệu
+* mượn được 1 triệu
+
+Kết quả:
+
+* classification = "transaction"
+* type = "income"
+
+Nguyên tắc:
+
+Tiền vào → income
+
+Tiền ra → expense
+
+Không phân biệt tiền đó là thu nhập thực sự hay khoản vay.
+
 ====================
 MÔ TẢ
 =====
@@ -556,4 +635,220 @@ Output:
 "amount": 20000000,
 "category": "salary",
 "description": "nhận lương 20 triệu rồi ăn tối hết 100k"
+}
+
+Input:
+phở bò
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 0,
+"category": "food",
+"description": "phở bò"
+}
+
+Input:
+trà sữa
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 0,
+"category": "food",
+"description": "trà sữa"
+}
+
+Input:
+grab 30k
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 30000,
+"category": "transport",
+"description": "grab 30k"
+}
+
+Input:
+đổ xăng 100k
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 100000,
+"category": "transport",
+"description": "đổ xăng 100k"
+}
+
+Input:
+ăn sáng 25k cafe 20k
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 45000,
+"category": "food",
+"description": "ăn sáng 25k cafe 20k"
+}
+
+Input:
+lương tháng 6 20 triệu
+
+Output:
+{
+"classification": "transaction",
+"type": "income",
+"amount": 20000000,
+"category": "salary",
+"description": "lương tháng 6 20 triệu"
+}
+
+Input:
+thưởng dự án 5tr
+
+Output:
+{
+"classification": "transaction",
+"type": "income",
+"amount": 5000000,
+"category": "salary",
+"description": "thưởng dự án 5tr"
+}
+
+Input:
+được hoàn tiền 200k
+
+Output:
+{
+"classification": "transaction",
+"type": "income",
+"amount": 200000,
+"category": "other",
+"description": "được hoàn tiền 200k"
+}
+
+Input:
+mua áo 15 USD
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 396030,
+"category": "shopping",
+"description": "mua áo 15 USD"
+}
+
+Input:
+lương 1000 USD
+
+Output:
+{
+"classification": "transaction",
+"type": "income",
+"amount": 26402000,
+"category": "salary",
+"description": "lương 1000 USD"
+}
+
+Input:
+50k
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 50000,
+"category": "other",
+"description": "50k"
+}
+
+Input:
+tài khoản còn 2 triệu
+
+Output:
+{
+"classification": "chat",
+"type": "",
+"amount": 0,
+"category": "",
+"description": ""
+}
+
+Input:
+cảm ơn bạn nhé
+
+Output:
+{
+"classification": "chat",
+"type": "",
+"amount": 0,
+"category": "",
+"description": ""
+}
+
+Input:
+nhận lương 20 triệu rồi ăn tối hết 100k
+
+Output:
+{
+"classification": "transaction",
+"type": "income",
+"amount": 20000000,
+"category": "salary",
+"description": "nhận lương 20 triệu rồi ăn tối hết 100k"
+}
+
+Input:
+cho Nam mượn 2 triệu
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 2000000,
+"category": "other",
+"description": "cho Nam mượn 2 triệu"
+}
+
+Input:
+trả nợ 5 triệu
+
+Output:
+{
+"classification": "transaction",
+"type": "expense",
+"amount": 5000000,
+"category": "other",
+"description": "trả nợ 5 triệu"
+}
+
+Input:
+Nam trả tôi 2 triệu
+
+Output:
+{
+"classification": "transaction",
+"type": "income",
+"amount": 2000000,
+"category": "other",
+"description": "Nam trả tôi 2 triệu"
+}
+
+Input:
+vay được 10 triệu
+
+Output:
+{
+"classification": "transaction",
+"type": "income",
+"amount": 10000000,
+"category": "other",
+"description": "vay được 10 triệu"
 }
