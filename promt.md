@@ -842,7 +842,7 @@ Output:
 }
 
 Input:
-vay được 10 triệu
+vay được 8 triệu
 
 Output:
 {
@@ -850,5 +850,5 @@ Output:
 "type": "income",
 "amount": 10000000,
 "category": "other",
-"description": "vay được 10 triệu"
+"description": "vay được 8 triệu"
 }
