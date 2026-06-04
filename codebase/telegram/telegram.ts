@@ -1,7 +1,7 @@
 import { api, APIError, ErrCode } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 import log from "encore.dev/log";
-import { ai_engine } from "~encore/clients";
+import { ai_engine, finance } from "~encore/clients";
 
 const botToken = secret("TelegramBotToken");
 
@@ -36,7 +36,7 @@ export const webhook = api.raw(
         const { reply } = await ai_engine.send({ message: msg.text });
         const text = typeof reply === "string" ? reply : (reply as any).text ?? "";
         log.info("ai engine reply", { text });
-        if (text) await sendMessage(msg.chat.id, text);
+        if (text) await sendMessage(msg.chat.id, text + "\n\n🌐 Xem chi tiết: http://localhost:4000/finance");
       }
     }
 
@@ -83,6 +83,56 @@ async function handleCommand(chatId: number, text: string) {
         + "• /summary — Xem tổng quan thu chi\n"
         + "• /help — Hướng dẫn này",
       );
+      break;
+
+    case "/summary":
+    case "/sum7":
+    case "/sum30":
+      try {
+        let label = "";
+        let days: number | undefined;
+
+        if (text === "/sum7") { label = "7 NGÀY QUA"; days = 7; }
+        else if (text === "/sum30") { label = "30 NGÀY QUA"; days = 30; }
+        else { label = "TỔNG QUAN"; }
+
+        const s = days !== undefined ? await finance.summary({ days }) : await finance.summary({});
+        const fmt = (n: number) =>
+          new Intl.NumberFormat("vi-VN").format(n) + " đ";
+
+        let msg = `📊 ${label}\n\n`;
+        msg += `💰 Thu nhập: ${fmt(s.total_income)}\n`;
+        msg += `💸 Chi tiêu: ${fmt(s.total_expense)}\n`;
+        msg += `📌 Số dư: ${fmt(s.balance)}`;
+
+        if (s.by_category.length > 0) {
+          msg += "\n\n─── Chi tiết theo danh mục ───\n";
+
+          const incomeCats = s.by_category.filter((c) => c.type === "income");
+          const expenseCats = s.by_category.filter((c) => c.type === "expense");
+
+          if (incomeCats.length > 0) {
+            msg += "\nThu nhập:\n";
+            for (const c of incomeCats)
+              msg += `  • ${c.category}: +${fmt(c.total)}\n`;
+          }
+
+          if (expenseCats.length > 0) {
+            msg += "\nChi tiêu:\n";
+            for (const c of expenseCats)
+              msg += `  • ${c.category}: -${fmt(c.total)}\n`;
+          }
+        }
+
+        msg += `\n\n🌐 Xem chi tiết: http://localhost:4000/finance`;
+        await sendMessage(chatId, msg);
+      } catch (error) {
+        log.error("summary failed", { error });
+        await sendMessage(
+          chatId,
+          "❌ Không thể lấy báo cáo tài chính. Vui lòng thử lại sau.",
+        );
+      }
       break;
 
     default:

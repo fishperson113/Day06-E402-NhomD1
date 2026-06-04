@@ -85,16 +85,21 @@ export interface Summary {
 
 export const summary = api(
   { expose: true, method: "GET", path: "/finance/summary" },
-  async (): Promise<Summary> => {
+  async (p?: { days?: number }): Promise<Summary> => {
+    const days = p?.days ?? null;
+
     const income = await db.queryRow<{ total: number }>`
-      SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE type = 'income'
+      SELECT COALESCE(SUM(amount)::float8, 0) as total FROM transactions
+      WHERE type = 'income' AND (${days}::int IS NULL OR transaction_date >= CURRENT_DATE - ${days}::int)
     `;
     const expense = await db.queryRow<{ total: number }>`
-      SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE type = 'expense'
+      SELECT COALESCE(SUM(amount)::float8, 0) as total FROM transactions
+      WHERE type = 'expense' AND (${days}::int IS NULL OR transaction_date >= CURRENT_DATE - ${days}::int)
     `;
     const byCat = await db.query<{ category: string; type: string; total: number }>`
-      SELECT category, type, CAST(SUM(amount) AS DECIMAL(12,2)) as total
+      SELECT category, type, SUM(amount)::float8 as total
       FROM transactions
+      WHERE (${days}::int IS NULL OR transaction_date >= CURRENT_DATE - ${days}::int)
       GROUP BY category, type
       ORDER BY total DESC
     `;
