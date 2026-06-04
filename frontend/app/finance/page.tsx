@@ -258,6 +258,10 @@ const TransactionForm: FC = () => {
 const TransactionList: FC = () => {
   const queryClient = useQueryClient();
   const [deleteHover, setDeleteHover] = useState<number | null>(null);
+  const [filterType, setFilterType] = useState<"all" | "income" | "expense">("all");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"date-newest" | "date-oldest" | "amount-highest" | "amount-lowest">("date-newest");
 
   const { data, isLoading, error } = useQuery<{ transactions: Transaction[]; total: number }>({
     queryKey: ["finance-transactions"],
@@ -274,6 +278,25 @@ const TransactionList: FC = () => {
     },
   });
 
+  const filteredTransactions = (data?.transactions ?? [])
+    .filter(t => filterType === "all" || t.type === filterType)
+    .filter(t => filterCategory === "all" || t.category === filterCategory)
+    .filter(t => !searchTerm || t.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => {
+      if (sortBy === "date-newest") return new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime();
+      if (sortBy === "date-oldest") return new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime();
+      if (sortBy === "amount-highest") return b.amount - a.amount;
+      if (sortBy === "amount-lowest") return a.amount - b.amount;
+      return 0;
+    });
+
+  const resetFilters = () => {
+    setFilterType("all");
+    setFilterCategory("all");
+    setSearchTerm("");
+    setSortBy("date-newest");
+  };
+
   if (isLoading) return (
     <p className="text-center py-8 animate-pulse" style={{ color: "var(--text-muted)" }}>
       ⏳ Loading transactions...
@@ -286,34 +309,144 @@ const TransactionList: FC = () => {
     </div>
   );
 
+  const filterStyle: React.CSSProperties = {
+    background: "var(--card-bg)",
+    border: "2px solid var(--card-border)",
+    borderRadius: "8px",
+    padding: "14px",
+    fontSize: "14px",
+    color: "var(--input-text)",
+    transition: TR,
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <h3 className="section-title text-xl font-bold">📋 Transactions</h3>
-        {data && data.total > 0 && (
+        {filteredTransactions.length > 0 && (
           <span
             className="px-3 py-1 rounded-full text-sm font-semibold"
             style={{ background: "var(--count-bg)", color: "var(--count-text)", transition: TR }}
           >
-            {data.total}
+            {filteredTransactions.length}
           </span>
         )}
       </div>
 
-      {data?.transactions.length === 0 && (
+      {/* Filter Section */}
+      <div
+        className="rounded-xl p-6 space-y-4"
+        style={{
+          background: "var(--card-bg)",
+          border: "2px solid var(--card-border)",
+          boxShadow: "var(--card-shadow)",
+          transition: TR,
+        }}
+      >
+        {/* Type Filter */}
+        <div>
+          <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "8px", transition: "color 0.35s ease" }}>
+            Type
+          </label>
+          <div className="flex gap-2">
+            {(["all", "income", "expense"] as const).map((type) => (
+              <button
+                key={type}
+                onClick={() => setFilterType(type)}
+                className="px-4 py-2 rounded-lg font-semibold text-xs"
+                style={{
+                  background: filterType === type ? (type === "income" ? "var(--income-color)" : type === "expense" ? "var(--expense-color)" : "#6366f1") : "var(--type-inactive-bg)",
+                  color: filterType === type ? "#ffffff" : "var(--type-inactive-text)",
+                  transition: TR,
+                }}
+              >
+                {type === "all" ? "All" : type === "income" ? "Income" : "Expense"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Category Filter */}
+        <div>
+          <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "8px", transition: "color 0.35s ease" }}>
+            Category
+          </label>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            style={filterStyle}
+          >
+            <option value="all">All Categories</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {CATEGORY_ICONS[cat]} {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Search */}
+        <div>
+          <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "8px", transition: "color 0.35s ease" }}>
+            Search Description
+          </label>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={filterStyle}
+          />
+        </div>
+
+        {/* Sort & Reset */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "8px", transition: "color 0.35s ease" }}>
+              Sort By
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              style={filterStyle}
+            >
+              <option value="date-newest">Newest First</option>
+              <option value="date-oldest">Oldest First</option>
+              <option value="amount-highest">Highest Amount</option>
+              <option value="amount-lowest">Lowest Amount</option>
+            </select>
+          </div>
+          <div className="flex items-end">
+            <button
+              onClick={resetFilters}
+              className="w-full px-4 py-2 rounded-lg font-semibold text-sm"
+              style={{
+                background: "var(--type-inactive-bg)",
+                color: "var(--type-inactive-text)",
+                transition: TR,
+              }}
+            >
+              ↻ Reset Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Transactions List */}
+      {filteredTransactions.length === 0 && (
         <div
           className="rounded-xl border-2 border-dashed p-12 text-center"
           style={{ background: "var(--empty-bg)", borderColor: "var(--empty-border)", transition: TR }}
         >
           <p className="text-4xl mb-3">📭</p>
           <p className="font-medium" style={{ color: "var(--empty-text)" }}>
-            No transactions yet. Add one to get started!
+            {data?.transactions.length === 0 ? "No transactions yet. Add one to get started!" : "No transactions match your filters."}
           </p>
         </div>
       )}
 
       <div className="space-y-3">
-        {data?.transactions.map((t) => (
+        {filteredTransactions.map((t) => (
           <div
             key={t.id}
             className="rounded-xl p-4 shadow-md"
@@ -385,7 +518,7 @@ const TransactionList: FC = () => {
           className="text-xs text-center mt-4 pt-4"
           style={{ color: "var(--text-muted)", borderTop: "1px solid var(--footer-border)" }}
         >
-          Total: {data.total} {data.total === 1 ? "transaction" : "transactions"}
+          Showing {filteredTransactions.length} of {data.total} {data.total === 1 ? "transaction" : "transactions"}
         </p>
       )}
     </div>
