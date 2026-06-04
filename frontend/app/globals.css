@@ -1,42 +1,158 @@
-/* ── Theme variables ─────────────────────────────────── */
+/* ── Theme variables ──────────────────────────────────────── */
 :root {
-  --body-bg:            linear-gradient(160deg, #0f0c29 0%, #302b63 45%, #1e1040 100%);
-  --header-bg:          linear-gradient(135deg, #0f0c29 0%, #2a1f6e 100%);
-  --header-border:      rgba(255, 215, 0, 0.2);
-  --logo-bg:            linear-gradient(135deg, #ffd700, #e8a000);
-  --logo-shadow:        0 0 18px rgba(255, 215, 0, 0.55);
-  --brand-from:         #ffe566;
-  --brand-via:          #ffd700;
-  --brand-to:           #e8a000;
-  --tagline-color:      rgba(255, 215, 0, 0.5);
-  --nav-color:          rgba(255, 215, 0, 0.85);
-  --nav-border:         rgba(255, 215, 0, 0.3);
-  --section-title:      #ffffff;
+  /* Background */
+  --body-bg:               linear-gradient(160deg, #0f0c29 0%, #302b63 45%, #1e1040 100%);
+
+  /* Header */
+  --header-bg:             linear-gradient(135deg, #0f0c29 0%, #2a1f6e 100%);
+  --header-border:         rgba(255, 215, 0, 0.2);
+
+  /* Logo */
+  --logo-bg:               linear-gradient(135deg, #ffd700, #e8a000);
+  --logo-shadow:           0 0 18px rgba(255, 215, 0, 0.55);
+
+  /* Brand gradient */
+  --brand-from:            #ffe566;
+  --brand-via:             #ffd700;
+  --brand-to:              #e8a000;
+
+  /* Nav */
+  --tagline-color:         rgba(255, 215, 0, 0.5);
+  --nav-color:             rgba(255, 215, 0, 0.85);
+  --nav-border:            rgba(255, 215, 0, 0.3);
+
+  /* Cards */
+  --card-bg:               rgba(255, 255, 255, 0.06);
+  --card-border:           rgba(255, 255, 255, 0.12);
+  --card-shadow:           0 4px 20px rgba(0, 0, 0, 0.35);
+
+  /* Text */
+  --text-primary:          #ffffff;
+  --text-secondary:        rgba(255, 255, 255, 0.55);
+  --text-muted:            rgba(255, 255, 255, 0.28);
+  --section-title:         #ffffff;
+
+  /* Finance numbers */
+  --income-color:          #34d399;
+  --expense-color:         #f87171;
+  --balance-positive:      #60a5fa;
+  --balance-negative:      #f87171;
+
+  /* Badges */
+  --badge-income-bg:       rgba(52, 211, 153, 0.18);
+  --badge-income-text:     #34d399;
+  --badge-expense-bg:      rgba(248, 113, 113, 0.18);
+  --badge-expense-text:    #f87171;
+
+  /* Inputs */
+  --input-bg:              rgba(255, 255, 255, 0.07);
+  --input-border:          rgba(255, 255, 255, 0.18);
+  --input-text:            #ffffff;
+  --input-placeholder:     rgba(255, 255, 255, 0.30);
+
+  /* Type toggle (inactive) */
+  --type-inactive-bg:      rgba(255, 255, 255, 0.08);
+  --type-inactive-text:    rgba(255, 255, 255, 0.38);
+
+  /* Delete */
+  --delete-color:          rgba(255, 255, 255, 0.25);
+  --delete-hover:          #f87171;
+
+  /* Typed summary cards */
+  --card-income-bg:        linear-gradient(135deg, rgba(52,211,153,0.13), rgba(16,185,129,0.06));
+  --card-income-border:    rgba(52, 211, 153, 0.30);
+  --card-expense-bg:       linear-gradient(135deg, rgba(248,113,113,0.13), rgba(239,68,68,0.06));
+  --card-expense-border:   rgba(248, 113, 113, 0.30);
+  --card-balance-bg:       linear-gradient(135deg, rgba(96,165,250,0.13), rgba(99,102,241,0.06));
+  --card-balance-border:   rgba(96, 165, 250, 0.30);
+
+  /* Labels / count badge */
+  --label-color:           rgba(255, 255, 255, 0.55);
+  --count-bg:              rgba(99, 102, 241, 0.25);
+  --count-text:            #a5b4fc;
+
+  /* Empty state */
+  --empty-bg:              rgba(255, 255, 255, 0.03);
+  --empty-border:          rgba(255, 255, 255, 0.12);
+  --empty-text:            rgba(255, 255, 255, 0.35);
+
+  /* Footer divider */
+  --footer-border:         rgba(255, 255, 255, 0.08);
 }
 
 :root[data-theme="light"] {
-  --body-bg:            linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%);
-  --header-bg:          linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  --header-border:      transparent;
-  --logo-bg:            rgba(255, 255, 255, 0.2);
-  --logo-shadow:        none;
-  --brand-from:         #ffffff;
-  --brand-via:          #e0e7ff;
-  --brand-to:           #c7d2fe;
-  --tagline-color:      rgba(255, 255, 255, 0.65);
-  --nav-color:          rgba(255, 255, 255, 0.85);
-  --nav-border:         rgba(255, 255, 255, 0.3);
-  --section-title:      #111827;
+  --body-bg:               linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%);
+
+  --header-bg:             linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --header-border:         transparent;
+
+  --logo-bg:               rgba(255, 255, 255, 0.2);
+  --logo-shadow:           none;
+
+  --brand-from:            #fde68a;
+  --brand-via:             #fbbf24;
+  --brand-to:              #f59e0b;
+
+  --tagline-color:         rgba(253, 230, 138, 0.8);
+  --nav-color:             rgba(255, 255, 255, 0.85);
+  --nav-border:            rgba(255, 255, 255, 0.3);
+
+  --card-bg:               #ffffff;
+  --card-border:           #e5e7eb;
+  --card-shadow:           0 1px 6px rgba(0, 0, 0, 0.08);
+
+  --text-primary:          #111827;
+  --text-secondary:        #6b7280;
+  --text-muted:            #9ca3af;
+  --section-title:         #111827;
+
+  --income-color:          #059669;
+  --expense-color:         #dc2626;
+  --balance-positive:      #2563eb;
+  --balance-negative:      #dc2626;
+
+  --badge-income-bg:       #d1fae5;
+  --badge-income-text:     #065f46;
+  --badge-expense-bg:      #fee2e2;
+  --badge-expense-text:    #991b1b;
+
+  --input-bg:              #f9fafb;
+  --input-border:          #d1d5db;
+  --input-text:            #111827;
+  --input-placeholder:     #9ca3af;
+
+  --type-inactive-bg:      #f3f4f6;
+  --type-inactive-text:    #6b7280;
+
+  --delete-color:          #9ca3af;
+  --delete-hover:          #dc2626;
+
+  --card-income-bg:        linear-gradient(135deg, #f0fdf4, #dcfce7);
+  --card-income-border:    #bbf7d0;
+  --card-expense-bg:       linear-gradient(135deg, #fef2f2, #fee2e2);
+  --card-expense-border:   #fecaca;
+  --card-balance-bg:       linear-gradient(135deg, #eff6ff, #e0e7ff);
+  --card-balance-border:   #bfdbfe;
+
+  --label-color:           #374151;
+  --count-bg:              #e0e7ff;
+  --count-text:            #4338ca;
+
+  --empty-bg:              linear-gradient(135deg, #f9fafb, #f3f4f6);
+  --empty-border:          #d1d5db;
+  --empty-text:            #9ca3af;
+
+  --footer-border:         #e5e7eb;
 }
 
-/* ── Base ────────────────────────────────────────────── */
+/* ── Base ─────────────────────────────────────────────────── */
 body {
   background: var(--body-bg);
   min-height: 100vh;
   transition: background 0.4s ease;
 }
 
-/* ── Reusable classes ────────────────────────────────── */
+/* ── Utility ──────────────────────────────────────────────── */
 .brand-text {
   background: linear-gradient(135deg, var(--brand-from), var(--brand-via), var(--brand-to));
   -webkit-background-clip: text;
@@ -46,10 +162,31 @@ body {
 
 .section-title {
   color: var(--section-title);
-  transition: color 0.3s ease;
+  transition: color 0.35s ease;
 }
 
-/* ── Particles ───────────────────────────────────────── */
+.themed-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.themed-input:focus,
+.themed-select:focus {
+  outline: none;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.themed-select option {
+  background: #1e1040;
+  color: #ffffff;
+}
+
+:root[data-theme="light"] .themed-select option {
+  background: #ffffff;
+  color: #111827;
+}
+
+/* ── Particles ────────────────────────────────────────────── */
 .particles {
   opacity: 1;
   transition: opacity 0.5s ease;
@@ -67,10 +204,10 @@ body {
 }
 
 @keyframes sparkle {
-  0%, 100% { transform: scale(0)   rotate(0deg);  opacity: 0;   }
-  25%       {                                      opacity: 1;   }
+  0%, 100% { transform: scale(0)    rotate(0deg);  opacity: 0;   }
+  25%       {                                       opacity: 1;   }
   50%       { transform: scale(1.4) rotate(90deg); opacity: 0.9; }
-  75%       {                                      opacity: 0.3; }
+  75%       {                                       opacity: 0.3; }
 }
 
 .coin {
